@@ -6,7 +6,7 @@ const SortSidebar = ({ isOpen, toggleSidebar, onSort }) => {
   return (
     <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <div className={`fixed top-0 right-0 w-full sm:w-1/4 bg-white p-6 transform transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} shadow-lg h-full overflow-y-auto`}>
-        {/* Close Button */}
+        
         <button
           onClick={toggleSidebar}
           className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 focus:outline-none"

@@ -30,9 +30,9 @@ const Dashboard = () => {
   });
 
   const [groupedCategory, setGroupedCategory] = useState('');
-  const [sortingCriteria, setSortingCriteria] = useState(''); // State for sorting criteria
+  const [sortingCriteria, setSortingCriteria] = useState('');
 
-  // Fetching data from the products.json file
+  
   useEffect(() => {
     fetch('/data.json') 
       .then(response => {
@@ -48,50 +48,46 @@ const Dashboard = () => {
       .catch(error => console.error('Error loading data:', error));
   }, []);
 
-  // Function to filter products by a specific category
+  // Function to filte products by a category
   const filterProducts = (category) => {
     const filtered = products.filter(product => product.category === category);
     setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to the first page whenever filters are applied
+    setCurrentPage(1); 
   };
 
-  // Reset the filter to show all products
+
   const resetFilter = () => {
     setFilteredProducts(products);
-    setCurrentPage(1); // Reset to the first page
+    setCurrentPage(1); 
   };
 
-  // Function to toggle the sidebar for filters
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Function to toggle the column sidebar
   const toggleColumnSidebar = () => {
     setIsColumnSidebarOpen(!isColumnSidebarOpen);
   };
 
-  // Function to toggle the sort sidebar
   const toggleSortSidebar = () => {
     setIsSortSidebarOpen(!isSortSidebarOpen);
   };
 
-  // Function to handle search input
   const handleSearch = (term) => {
     setSearchTerm(term);
     const filtered = products.filter(product =>
       product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
     );
     setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to the first page when searching
+    setCurrentPage(1); 
   };
 
-  // Function to toggle the group sidebar
+  
   const toggleGroupSidebar = () => {
     setIsGroupOpen(!isGroupOpen);
   };
 
-  // Function to get product categories with counts
+
   const getCategoryCounts = () => {
     const categoryCounts = products.reduce((acc, product) => {
       acc[product.category] = (acc[product.category] || 0) + 1;
@@ -100,59 +96,55 @@ const Dashboard = () => {
     return categoryCounts;
   };
 
-  // Function to apply grouping based on the selected category
+
   const handleApplyGrouping = (category) => {
-    setGroupedCategory(category); // Set the selected category
-    filterProducts(category); // Filter products based on the selected category
-    toggleGroupSidebar(); // Close the sidebar after applying
+    setGroupedCategory(category); 
+    filterProducts(category); 
+    toggleGroupSidebar(); 
   };
 
-  // Function to clear the grouping
+
   const handleClearGrouping = () => {
     setGroupedCategory('');
-    resetFilter(); // Reset to show all products
+    resetFilter(); 
   };
 
-  // Function to sort products
   const sortProducts = (criteria) => {
     const sorted = [...filteredProducts].sort((a, b) => {
       switch (criteria) {
         case 'id':
-          return a.id - b.id; // Assuming id is a number
+          return a.id - b.id; 
         case 'name':
-          return a.name.localeCompare(b.name); // For string comparison
+          return a.name.localeCompare(b.name); 
         case 'category':
           return a.category.localeCompare(b.category);
         case 'subcategory':
           return a.subcategory.localeCompare(b.subcategory);
         case 'createdAt':
-          return new Date(a.createdAt) - new Date(b.createdAt); // Assuming createdAt is a date string
+          return new Date(a.createdAt) - new Date(b.createdAt); 
         case 'updatedAt':
           return new Date(a.updatedAt) - new Date(b.updatedAt);
         case 'price':
-          return a.price - b.price; // Assuming price is a number
+          return a.price - b.price; 
         case 'sale_price':
-          return a.sale_price - b.sale_price; // Assuming sale_price is a number
+          return a.sale_price - b.sale_price; 
         default:
-          return 0; // No sorting
+          return 0; 
       }
     });
-    setFilteredProducts(sorted); // Update state with sorted products
+    setFilteredProducts(sorted); 
   };
 
-  // Function to handle sorting selection
+
   const handleSortingChange = (criteria) => {
     setSortingCriteria(criteria);
     sortProducts(criteria);
-    toggleSortSidebar(); // Close the sorting sidebar after applying
+    toggleSortSidebar(); 
   };
-
-  // Calculate current products to display based on the current page
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
@@ -166,10 +158,10 @@ const Dashboard = () => {
           </div>
           
           <ActionIcons 
-            onSort={toggleSortSidebar} // Open sorting sidebar
+            onSort={toggleSortSidebar} 
             onFilter={toggleSidebar} 
             onViewLayers={toggleColumnSidebar} 
-            onGroup={toggleGroupSidebar} // Pass toggleGroupSidebar here
+            onGroup={toggleGroupSidebar} 
           />
         </div>
       </nav>
@@ -184,13 +176,13 @@ const Dashboard = () => {
         isOpen={isGroupOpen} 
         toggleSidebar={toggleGroupSidebar} 
         categoryCounts={getCategoryCounts()} 
-        onApplyGrouping={handleApplyGrouping} // Pass the apply grouping function
-        onClearGrouping={handleClearGrouping} // Pass the clear grouping function
+        onApplyGrouping={handleApplyGrouping}
+        onClearGrouping={handleClearGrouping} 
       />
       <SortSidebar 
         isOpen={isSortSidebarOpen} 
         toggleSidebar={toggleSortSidebar} 
-        onSort={handleSortingChange} // Pass sorting function
+        onSort={handleSortingChange} 
       />
       <ColumnToggleSidebar 
         isOpen={isColumnSidebarOpen} 
@@ -234,7 +226,6 @@ const Dashboard = () => {
               ))}
             </tbody>
           </table>
-          {/* Pagination controls */}
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 

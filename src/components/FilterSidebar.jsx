@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import Slider from 'rc-slider'; // Import rc-slider
-import 'rc-slider/assets/index.css'; // Import the default styles
+import Slider from 'rc-slider'; 
+import 'rc-slider/assets/index.css'; 
 
 const FilterSidebar = ({ 
   isOpen, 
@@ -20,10 +20,10 @@ const FilterSidebar = ({
     'Beauty': 5,
     'Electronics': 8,
   },
-  subcategories = ['Nutrition', 'Mens', 'Outdoors', 'Camping', 'Cleaning', 'Aquarium', 'Cat', 'Tire', 'Jewelry', 'Movie', 'Furniture', 'Baby', 'First Aid', 'Home Improvement', 'Bath', 'Kids', 'Sports', 'Party', 'Computer', 'Dog', 'Technology', 'Toy', 'Engine', 'Music', 'Dining', 'Skin Care', 'Camera', 'Swimming', 'Kitchen', 'Phone', 'Medicine', 'Game', 'Storage', 'Vitamin', 'Bedding'] // List of subcategories
+  subcategories = ['Nutrition', 'Mens', 'Outdoors', 'Camping', 'Cleaning', 'Aquarium', 'Cat', 'Tire', 'Jewelry', 'Movie', 'Furniture', 'Baby', 'First Aid', 'Home Improvement', 'Bath', 'Kids', 'Sports', 'Party', 'Computer', 'Dog', 'Technology', 'Toy', 'Engine', 'Music', 'Dining', 'Skin Care', 'Camera', 'Swimming', 'Kitchen', 'Phone', 'Medicine', 'Game', 'Storage', 'Vitamin', 'Bedding'] 
 }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState(''); // State for selected subcategory
+  const [selectedSubcategory, setSelectedSubcategory] = useState(''); 
   const [nameInput, setNameInput] = useState('');
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [salePriceRange, setSalePriceRange] = useState([0, 100]);
@@ -34,7 +34,7 @@ const FilterSidebar = ({
     const filters = {
       name: nameInput,
       category: selectedCategory,
-      subcategory: selectedSubcategory, // Include selected subcategory in the filters
+      subcategory: selectedSubcategory, 
       createdAt: selectedDateCreated,
       updatedAt: selectedDateUpdated,
       price: priceRange,
@@ -56,8 +56,6 @@ const FilterSidebar = ({
 
         <div className="p-4">
           <h2 className="text-2xl font-bold mb-4">Filter Products</h2>
-
-          {/* Name Input */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Name</label>
             <input
@@ -68,7 +66,6 @@ const FilterSidebar = ({
             />
           </div>
 
-          {/* Category List with Counts */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Category</label>
             <div>
@@ -91,8 +88,6 @@ const FilterSidebar = ({
               ))}
             </div>
           </div>
-
-          {/* Subcategory Dropdown */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Subcategory</label>
             <select
@@ -106,14 +101,12 @@ const FilterSidebar = ({
               ))}
             </select>
           </div>
-
-          {/* Price Range Slider */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Price Range</label>
             <Slider
               range
               min={0}
-              max={100} // Adjust as necessary
+              max={100} 
               value={priceRange}
               onChange={setPriceRange}
             />
@@ -123,23 +116,22 @@ const FilterSidebar = ({
             </div>
           </div>
 
-          {/* Sale Price Range Slider */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Sale Price Range</label>
             <Slider
               range
               min={0}
-              max={100} // Adjust as necessary
+              max={100} 
               value={salePriceRange}
               onChange={setSalePriceRange}
             />
-            <div className="flex justify-between">
+            <div className="flex
+      justify-between">
               <span>${salePriceRange[0]}</span>
               <span>${salePriceRange[1]}</span>
             </div>
           </div>
 
-          {/* Date Filter for Created At */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Created At</label>
             <input
@@ -150,7 +142,6 @@ const FilterSidebar = ({
             />
           </div>
 
-          {/* Date Filter for Updated At */}
           <div className="mb-4">
             <label className="block font-medium mb-2">Updated At</label>
             <input
@@ -160,8 +151,7 @@ const FilterSidebar = ({
               className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Apply and Clear Filter Buttons */}
+  
           <div className="flex justify-between mt-4">
             <button
               onClick={handleApplyFilters}

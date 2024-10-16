@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faSort, faLayerGroup, faFilter, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 const ActionIcons = ({ onSort, onFilter, onViewLayers, onGroup }) => {
-  const [isExpanded, setIsExpanded] = useState(false); // State to manage icon visibility
+  const [isExpanded, setIsExpanded] = useState(false); 
 
   const toggleIcons = () => {
     setIsExpanded(!isExpanded);
@@ -44,22 +44,22 @@ const ActionIcons = ({ onSort, onFilter, onViewLayers, onGroup }) => {
 
       {/* Action Icons for larger screens */}
       <div className={`hidden md:flex space-x-2 md:space-x-4`}>
-        {/* View Layers Icon */}
+        
         <button onClick={onViewLayers} className="p-3 hover:bg-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" title="View Layers">
           <FontAwesomeIcon icon={faEye} size="lg" />
         </button>
 
-        {/* Sort Icon */}
+
         <button onClick={onSort} className="p-3 hover:bg-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" title="Sort">
           <FontAwesomeIcon icon={faSort} size="lg" />
         </button>
 
-        {/* Filter Icon */}
+
         <button onClick={onFilter} className="p-3 hover:bg-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" title="Filters">
           <FontAwesomeIcon icon={faFilter} size="lg" />
         </button>
 
-        {/* Layers Icon - now triggers the group sidebar */}
+      
         <button onClick={onGroup} className="p-3 hover:bg-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" title="Group">
           <FontAwesomeIcon icon={faLayerGroup} size="lg" />
         </button>

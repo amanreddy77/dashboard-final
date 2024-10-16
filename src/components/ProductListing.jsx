@@ -44,7 +44,7 @@ const ProductListing = ({ products }) => {
   };
 
   const resetFilter = () => {
-    setFilteredProducts(products); // Reset to all products
+    setFilteredProducts(products); 
   };
 
   return (
@@ -61,15 +61,12 @@ const ProductListing = ({ products }) => {
         filterProducts={filterProducts} 
         resetFilter={resetFilter} 
       />
-
-      {/* Display the filtered products */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filteredProducts.map((product) => (
           <div key={product.id} className="bg-white p-4 rounded shadow-md">
             <h3 className="font-semibold text-lg">{product.name}</h3>
             <p className="text-gray-600">{product.category}</p>
             <p className="text-gray-600">Price: ${product.price.toFixed(2)}</p>
-            {/* Add more product details as needed */}
           </div>
         ))}
       </div>

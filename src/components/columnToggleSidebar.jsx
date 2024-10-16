@@ -13,14 +13,14 @@ const ColumnToggleSidebar = ({ isOpen, toggleSidebar, visibleColumns, setVisible
   const handleShowAllColumns = () => {
     const allColumns = {};
     Object.keys(visibleColumns).forEach(column => {
-      allColumns[column] = true; // Set all columns to visible
+      allColumns[column] = true; 
     });
     setVisibleColumns(allColumns);
   };
 
   const handleApply = () => {
     console.log('Applied changes:', visibleColumns);
-    toggleSidebar(); // Close sidebar after applying
+    toggleSidebar(); 
   };
 
   const columnNames = [

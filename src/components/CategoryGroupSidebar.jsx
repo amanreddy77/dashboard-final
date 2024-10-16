@@ -11,16 +11,16 @@ const CategoryGroupSidebar = ({ isOpen, toggleSidebar, categoryCounts }) => {
   };
 
   const handleApplyGrouping = () => {
-    // Set the applied category to the selected category
+   
     setAppliedCategory(selectedCategory);
     console.log('Grouping applied for category:', selectedCategory);
   };
 
   const handleClearGrouping = () => {
-    // Logic to clear the grouping
+    
     console.log('Grouping cleared');
     setSelectedCategory(''); 
-    setAppliedCategory(''); // Clear applied category
+    setAppliedCategory(''); 
   };
 
   return (
@@ -33,7 +33,7 @@ const CategoryGroupSidebar = ({ isOpen, toggleSidebar, categoryCounts }) => {
           </button>
         </div>
 
-        {/* Dropdown for category selection */}
+       
         <div className="mb-4">
           <label htmlFor="category-select" className="block text-sm font-medium mb-2">Select Category:</label>
           <select
@@ -51,12 +51,12 @@ const CategoryGroupSidebar = ({ isOpen, toggleSidebar, categoryCounts }) => {
           </select>
         </div>
 
-        {/* Buttons for applying and clearing grouping */}
+       
         <div className="flex justify-between mt-4">
           <button
             onClick={handleApplyGrouping}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-            disabled={!selectedCategory} // Disable if no category is selected
+            disabled={!selectedCategory} 
           >
             Apply Grouping
           </button>
@@ -68,7 +68,7 @@ const CategoryGroupSidebar = ({ isOpen, toggleSidebar, categoryCounts }) => {
           </button>
         </div>
 
-        {/* Category counts display */}
+       
         <div className="mt-4">
           {Object.entries(categoryCounts).filter(([category]) => appliedCategory === '' || category === appliedCategory).map(([category, count]) => (
             <div key={category} className="flex justify-between items-center p-2 border-b hover:bg-gray-100 transition">
