@@ -1,277 +1,246 @@
-import React, { useRef, useState } from 'react';
-import { Line, Bar } from 'react-chartjs-2';
-import { ResizableBox } from 'react-resizable';
-import 'chart.js/auto';
-import screenfull from 'screenfull';
-
+import React, { useEffect, useState } from 'react';
+import SearchBar from './SearchBar';
+import FilterSidebar from './FilterSidebar'; 
+import ActionIcons from './ActionIcons';
+import Pagination from './pagination';
+import ColumnToggleSidebar from './columnToggleSidebar'; 
+import CategoryGroupSidebar from './CategoryGroupSidebar';
+import SortSidebar from './SortSiderbar'; 
 
 const Dashboard = () => {
-  const [lineData, setLineData] = useState({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Sales 1',
-        data: [50, 100, 150, 100, 50, 150],
-        borderColor: 'red',
-        fill: true,
-      },
-      {
-        label: 'Sales 2',
-        data: [70, 120, 130, 90, 60, 100],
-        borderColor: 'blue',
-        fill: true,
-      },
-    ],
+  const [products, setProducts] = useState([]);
+  const [isGroupOpen, setIsGroupOpen] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isColumnSidebarOpen, setIsColumnSidebarOpen] = useState(false); 
+  const [isSortSidebarOpen, setIsSortSidebarOpen] = useState(false); // New state for sorting
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10; 
+  
+  const [visibleColumns, setVisibleColumns] = useState({
+    id: true,
+    name: true,
+    category: true,
+    subcategory: true,
+    createdAt: true,
+    updatedAt: true,
+    price: true,
+    sale_price: true,
   });
 
-  const [barData, setBarData] = useState({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Product Sales',
-        data: [100, 150, 130, 140, 120, 90],
-        backgroundColor: 'blue',
-      },
-    ],
-  });
+  const [groupedCategory, setGroupedCategory] = useState('');
+  const [sortingCriteria, setSortingCriteria] = useState(''); // State for sorting criteria
 
-  const lineChartRef = useRef(null);
-  const barChartRef = useRef(null);
+  // Fetching data from the products.json file
+  useEffect(() => {
+    fetch('/data.json') 
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setProducts(data);
+        setFilteredProducts(data);  
+      })
+      .catch(error => console.error('Error loading data:', error));
+  }, []);
 
-  const toggleFullScreen = (ref) => {
-    if (screenfull.isEnabled) {
-      screenfull.toggle(ref.current);
-    }
+  // Function to filter products by a specific category
+  const filterProducts = (category) => {
+    const filtered = products.filter(product => product.category === category);
+    setFilteredProducts(filtered);
+    setCurrentPage(1); // Reset to the first page whenever filters are applied
   };
 
-  const lineChartOptions = {
-    plugins: {
-      tooltip: {
-        enabled: true,
-      },
-      zoom: {
-        pan: {
-          enabled: true,
-          mode: 'xy',
-        },
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true,
-          },
-          mode: 'xy',
-        },
-      },
-    },
-  };
-
-  const barChartOptions = {
-    plugins: {
-      tooltip: {
-        enabled: true,
-      },
-      zoom: {
-        pan: {
-          enabled: true,
-          mode: 'xy',
-        },
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true,
-          },
-          mode: 'xy',
-        },
-      },
-    },
-  };
-
-  const filterData = (month) => {
-    const newLineData = {
-      ...lineData,
-      labels: lineData.labels.filter((label) => label === month),
-      datasets: lineData.datasets.map((dataset) => ({
-        ...dataset,
-        data: dataset.data.filter((_, index) => lineData.labels[index] === month),
-      })),
-    };
-
-    const newBarData = {
-      ...barData,
-      labels: barData.labels.filter((label) => label === month),
-      datasets: barData.datasets.map((dataset) => ({
-        ...dataset,
-        data: dataset.data.filter((_, index) => barData.labels[index] === month),
-      })),
-    };
-
-    setLineData(newLineData);
-    setBarData(newBarData);
-  };
-
+  // Reset the filter to show all products
   const resetFilter = () => {
-    setLineData({
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        {
-          label: 'Sales 1',
-          data: [50, 100, 150, 100, 50, 150],
-          borderColor: 'red',
-          fill: true,
-        },
-        {
-          label: 'Sales 2',
-          data: [70, 120, 130, 90, 60, 100],
-          borderColor: 'blue',
-          fill: true,
-        },
-      ],
-    });
-
-    setBarData({
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        {
-          label: 'Product Sales',
-          data: [100, 150, 130, 140, 120, 90],
-          backgroundColor: 'blue',
-        },
-      ],
-    });
+    setFilteredProducts(products);
+    setCurrentPage(1); // Reset to the first page
   };
+
+  // Function to toggle the sidebar for filters
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // Function to toggle the column sidebar
+  const toggleColumnSidebar = () => {
+    setIsColumnSidebarOpen(!isColumnSidebarOpen);
+  };
+
+  // Function to toggle the sort sidebar
+  const toggleSortSidebar = () => {
+    setIsSortSidebarOpen(!isSortSidebarOpen);
+  };
+
+  // Function to handle search input
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    const filtered = products.filter(product =>
+      product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
+    );
+    setFilteredProducts(filtered);
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
+  // Function to toggle the group sidebar
+  const toggleGroupSidebar = () => {
+    setIsGroupOpen(!isGroupOpen);
+  };
+
+  // Function to get product categories with counts
+  const getCategoryCounts = () => {
+    const categoryCounts = products.reduce((acc, product) => {
+      acc[product.category] = (acc[product.category] || 0) + 1;
+      return acc;
+    }, {});
+    return categoryCounts;
+  };
+
+  // Function to apply grouping based on the selected category
+  const handleApplyGrouping = (category) => {
+    setGroupedCategory(category); // Set the selected category
+    filterProducts(category); // Filter products based on the selected category
+    toggleGroupSidebar(); // Close the sidebar after applying
+  };
+
+  // Function to clear the grouping
+  const handleClearGrouping = () => {
+    setGroupedCategory('');
+    resetFilter(); // Reset to show all products
+  };
+
+  // Function to sort products
+  const sortProducts = (criteria) => {
+    const sorted = [...filteredProducts].sort((a, b) => {
+      switch (criteria) {
+        case 'id':
+          return a.id - b.id; // Assuming id is a number
+        case 'name':
+          return a.name.localeCompare(b.name); // For string comparison
+        case 'category':
+          return a.category.localeCompare(b.category);
+        case 'subcategory':
+          return a.subcategory.localeCompare(b.subcategory);
+        case 'createdAt':
+          return new Date(a.createdAt) - new Date(b.createdAt); // Assuming createdAt is a date string
+        case 'updatedAt':
+          return new Date(a.updatedAt) - new Date(b.updatedAt);
+        case 'price':
+          return a.price - b.price; // Assuming price is a number
+        case 'sale_price':
+          return a.sale_price - b.sale_price; // Assuming sale_price is a number
+        default:
+          return 0; // No sorting
+      }
+    });
+    setFilteredProducts(sorted); // Update state with sorted products
+  };
+
+  // Function to handle sorting selection
+  const handleSortingChange = (criteria) => {
+    setSortingCriteria(criteria);
+    sortProducts(criteria);
+    toggleSortSidebar(); // Close the sorting sidebar after applying
+  };
+
+  // Calculate current products to display based on the current page
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-blue-800 p-4 text-white flex justify-between items-center">
-        <div className="text-xl font-bold">Dashboard</div>
-        <div>
-          <a href="#overview" className="mx-2">Overview</a>
-          <a href="#analytics" className="mx-2">Analytics</a>
-          <a href="#settings" className="mx-2">Settings</a>
-              </div>
-              
+      <nav className="bg-blue-800 p-4 text-white flex flex-col md:flex-row justify-between items-center">
+        <div className="text-xl font-bold mb-2 md:mb-0">Dashboard</div>
+
+        <div className="flex items-center justify-center flex-grow md:flex-row">
+          <div className="relative w-full md:w-1/2 lg:w-1/3">
+            <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearch} />
+          </div>
+          
+          <ActionIcons 
+            onSort={toggleSortSidebar} // Open sorting sidebar
+            onFilter={toggleSidebar} 
+            onViewLayers={toggleColumnSidebar} 
+            onGroup={toggleGroupSidebar} // Pass toggleGroupSidebar here
+          />
+        </div>
       </nav>
-      <div className='p-8'>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Recent Orders</h2>
-          <table className="min-w-full bg-white">
+
+      <FilterSidebar 
+        isOpen={isSidebarOpen} 
+        toggleSidebar={toggleSidebar} 
+        filterProducts={filterProducts} 
+        resetFilter={resetFilter} 
+      />
+      <CategoryGroupSidebar 
+        isOpen={isGroupOpen} 
+        toggleSidebar={toggleGroupSidebar} 
+        categoryCounts={getCategoryCounts()} 
+        onApplyGrouping={handleApplyGrouping} // Pass the apply grouping function
+        onClearGrouping={handleClearGrouping} // Pass the clear grouping function
+      />
+      <SortSidebar 
+        isOpen={isSortSidebarOpen} 
+        toggleSidebar={toggleSortSidebar} 
+        onSort={handleSortingChange} // Pass sorting function
+      />
+      <ColumnToggleSidebar 
+        isOpen={isColumnSidebarOpen} 
+        toggleSidebar={toggleColumnSidebar} 
+        visibleColumns={visibleColumns} 
+        setVisibleColumns={setVisibleColumns} 
+      />
+
+      <div className="p-4 md:p-8">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-4">Product List</h2>
+          <table className="min-w-full bg-white border-collapse">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">Invoice</th>
-                <th className="py-2 px-4 border-b">Status</th>
-                <th className="py-2 px-4 border-b">Method</th>
-                <th className="py-2 px-4 border-b">Amount</th>
+                {visibleColumns.id && <th className="py-2 px-4 border-b text-left">Id</th>}
+                {visibleColumns.name && <th className="py-2 px-4 border-b text-left">Name</th>}
+                {visibleColumns.category && <th className="py-2 px-4 border-b text-left">Category</th>}
+                {visibleColumns.subcategory && <th className="py-2 px-4 border-b text-left">Subcategory</th>}
+                {visibleColumns.createdAt && <th className="py-2 px-4 border-b text-left">Created At</th>}
+                {visibleColumns.updatedAt && <th className="py-2 px-4 border-b text-left">Updated At</th>}
+                {visibleColumns.price && <th className="py-2 px-4 border-b text-left">Price</th>}
+                {visibleColumns.sale_price && <th className="py-2 px-4 border-b text-left">Sale Price</th>}
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="py-2 px-4 border-b">INV001</td>
-                <td className="py-2 px-4 border-b">Paid</td>
-                <td className="py-2 px-4 border-b">Credit Card</td>
-                <td className="py-2 px-4 border-b">$250.00</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b">INV002</td>
-                <td className="py-2 px-4 border-b">Pending</td>
-                <td className="py-2 px-4 border-b">PayPal</td>
-                <td className="py-2 px-4 border-b">$150.00</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b">INV003</td>
-                <td className="py-2 px-4 border-b">Unpaid</td>
-                <td className="py-2 px-4 border-b">Bank Transfer</td>
-                <td className="py-2 px-4 border-b">$350.00</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b">INV004</td>
-                <td className="py-2 px-4 border-b">Paid</td>
-                <td className="py-2 px-4 border-b">Credit Card</td>
-                <td className="py-2 px-4 border-b">$450.00</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b">INV005</td>
-                <td className="py-2 px-4 border-b">Paid</td>
-                <td className="py-2 px-4 border-b">PayPal</td>
-                <td className="py-2 px-4 border-b">$550.00</td>
-              </tr>
+              {currentProducts.map((product) => (
+                <tr key={product.id} className="hover:bg-gray-100">
+                  {visibleColumns.id && <td className="py-2 px-4 border-b text-left">{product.id}</td>} 
+                  {visibleColumns.name && <td className="py-2 px-4 border-b text-left">{product.name}</td>}
+                  {visibleColumns.category && <td className="py-2 px-4 border-b text-left">{product.category}</td>}
+                  {visibleColumns.subcategory && <td className="py-2 px-4 border-b text-left">{product.subcategory}</td>}
+                  {visibleColumns.createdAt && <td className="py-2 px-4 border-b text-left">{new Date(product.createdAt).toLocaleDateString()}</td>}
+                  {visibleColumns.updatedAt && <td className="py-2 px-4 border-b text-left">{new Date(product.updatedAt).toLocaleDateString()}</td>}
+                  {visibleColumns.price && <td className="py-2 px-4 border-b text-left">
+                    ${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}
+                  </td>}
+                  {visibleColumns.sale_price && <td className="py-2 px-4 border-b text-left">
+                    ${typeof product.sale_price === 'number' ? product.sale_price.toFixed(2) : 'N/A'}
+                  </td>}
+                </tr>
+              ))}
             </tbody>
           </table>
+          {/* Pagination controls */}
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
         </div>
-      </div>
-      
-          <div className="p-8">
-          <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Filter Data</h2>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => filterData('Jan')}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              January
-            </button>
-            <button
-              onClick={() => filterData('Feb')}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              February
-            </button>
-            <button
-              onClick={() => filterData('Mar')}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              March
-            </button>
-            <button
-              onClick={resetFilter}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="p-8">
-              <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                  
-          <h2 className="text-2xl font-bold mb-2">Sales Overview</h2>
-          <p className="mb-4">A line chart showing total sales over time.</p>
-          <div className="relative">
-            <ResizableBox width={600} height={300} minConstraints={[300, 200]} maxConstraints={[1000, 600]}>
-              <div ref={lineChartRef}>
-                <Line data={lineData} options={lineChartOptions} />
-              </div>
-            </ResizableBox>
-            <button
-              onClick={() => toggleFullScreen(lineChartRef)}
-              className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded"
-            >
-              Full Screen
-            </button>
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-2xl font-bold mb-2">Product Performance</h2>
-          <p className="mb-4">A bar chart showing product sales by category.</p>
-          <div className="relative">
-            <ResizableBox width={600} height={300} minConstraints={[300, 200]} maxConstraints={[1000, 600]}>
-              <div ref={barChartRef}>
-                <Bar data={barData} options={barChartOptions} />
-              </div>
-            </ResizableBox>
-            <button
-              onClick={() => toggleFullScreen(barChartRef)}
-              className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded"
-            >
-              Full Screen
-            </button>
-          </div>
-        </div>
-       
-       
       </div>
     </div>
   );
